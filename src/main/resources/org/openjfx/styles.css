@@ -1,0 +1,16 @@
+.main{
+    -alignment: "CENTER";
+}
+
+.label {
+    -fx-text-fill: blue;
+}
+
+#register_task {
+    -fx-spacing: 10px;
+    /*-fx-alignment: "CENTER";*/
+}
+
+#task {
+    -fx-pref-width: 400px;
+}
