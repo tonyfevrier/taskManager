@@ -13,8 +13,8 @@
       <Label fx:id="label" text="Label" />
       <HBox fx:id="register_task"> 
             <DatePicker fx:id="date"/>
-            <TextField fx:id="task" text="Enter a task"/>
-            <Button text="Register"/>
+            <TextField fx:id="task" promptText="Enter a task" />
+            <Button fx:id="register" text="Register"/>
       </HBox>
    </children> 
 </StackPane>

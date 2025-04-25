@@ -16,7 +16,8 @@ public class MainApp extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm()); // add prend une URL absolue sous forme de str (ce que permet toExternalForm)
         
-        stage.setTitle("JavaFX and Gradle");
+        
+        stage.setTitle("TaskManager");
         stage.setScene(scene);
         stage.show();
     }
