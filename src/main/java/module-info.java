@@ -9,4 +9,5 @@ module taskManager {
     opens org.openjfx to javafx.fxml; // org.openjfx est le package que je crée via ce projet. opens rend toutes les classes (public et private) de ce package accessibles à javafx.fxml (pour le fxml et le css).
     exports org.openjfx; // Rend les classes publiques du module visible à d'autres modules
     exports org.mysql;
+    exports org.models;
 }

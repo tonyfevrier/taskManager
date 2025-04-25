@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.time.LocalDate;
 
 import org.mysql.DatabaseConnection;
+import org.models.Task;
 
 /**
  * Classe appelée dans scene.fxml pour y intégrer des éléments JavaFX. Par exemple,
@@ -28,15 +29,13 @@ public class FXMLController {
     @FXML
     private Label label;
     @FXML
-    private Button register;
+    private Button registerButton;
     @FXML
     private DatePicker taskDate;
     @FXML 
-    private TextField task;
+    private TextField taskText;
     @FXML
-    private Label errorRegisterTask;
-
- 
+    private Label errorRegisterTask; 
 
     /**
      * Tous les éléments qui ont un comportement spécial après injection doivent être intégrés dans cette méthode :
@@ -46,40 +45,39 @@ public class FXMLController {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
         label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
-        register.setOnAction(this::registerTaskIfFilled);
+        registerButton.setOnAction(this::registerTaskIfFilled);
     }
 
     private void registerTaskIfFilled(ActionEvent event){
-        String text = task.getText();
-        LocalDate date = taskDate.getValue();
-        this.showErrorMessageIfTaskIsEmpty(text);
-        this.registerTask(text, date);
+        Task task = new Task(taskText, taskDate);
+        if (task.text.isEmpty()){
+            this.showErrorMessage();
+            return;
+        }
+        this.register(task);
         this.showSuccessfulRegisteringMessage();
     }
 
-
-    private void showErrorMessageIfTaskIsEmpty(String text){
-        if (text.isEmpty()){
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setHeaderText("Invalid task");
-            alert.setContentText("You should enter a task");
-            alert.showAndWait();
-            return;
-        }
+    private void showErrorMessage(){
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setHeaderText("Invalid task");
+        alert.setContentText("You should enter a task");
+        alert.showAndWait();
     }
 
-    private void registerTask(String text, LocalDate date){
+    private void register(Task task) {
+        /* MySQL registering of a given task */
         try (Connection connection = DatabaseConnection.getConnection()){
             String sql = "INSERT INTO tasks (task, created_at) VALUES (?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, text);
-            if (date != null){
-                statement.setString(2, date.toString());
+            statement.setString(1, task.text);
+            if (task.date != null){
+                statement.setString(2, task.date.toString());
             } else {
                 statement.setNull(2, java.sql.Types.TIMESTAMP);
             }
             statement.executeUpdate();
-            task.clear();
+            taskText.clear();
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -93,9 +91,5 @@ public class FXMLController {
     }
 }
 
-/*FAUDRA SUREMENT METTRE CET OBJET DANS UN MODEL */
-private class Task {
-    private String text = task.getText();
-    private LocalDate date = taskDate.getValue;
-}
+
 
