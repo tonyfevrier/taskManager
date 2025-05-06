@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 
 import org.mysql.DatabaseConnection;
+import org.mysql.TableCreation;
 import org.models.Task;
 
 /**
@@ -47,7 +48,7 @@ public class FXMLController {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
         label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + "."); 
-        this.createTaskTableIfNotExists();
+        TableCreation.createTaskTableIfNotExists();
         registerButton.setOnAction(this::registerTaskIfFilled);
     }
 
@@ -86,49 +87,6 @@ public class FXMLController {
         }
     }
 
-    private void createTaskTableIfNotExists(){
-        try (Connection connection = DatabaseConnection.getConnection()){
-            boolean databaseExists = this.doesTaskTableExists(connection);
-            if (!databaseExists){
-                this.createTaskTable(connection);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    private boolean doesTaskTableExists(Connection connection){
-        try {
-            String sql = "SHOW TABLES";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            boolean databaseExists = false;
-            while(resultSet.next()){
-                String databaseName = resultSet.getString(1);
-                if (databaseName.equals("tasks")){
-                    databaseExists = true;
-                }
-            }
-            System.out.println(databaseExists);
-            return databaseExists;
-        } catch (SQLException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private void createTaskTable(Connection connection){
-        try {
-            String use_database_sql = "USE task_manager;";
-            String create_table_sql = "CREATE TABLE tasks (id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT NULL);";
-            Statement statement = connection.createStatement();
-            statement.execute(use_database_sql);
-            statement.execute(create_table_sql);
-        } catch (SQLException e){
-            e.printStackTrace();
-        }   
-    }
-
     private void showSuccessfulRegisteringMessage(){
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Success");
@@ -136,6 +94,8 @@ public class FXMLController {
         alert.showAndWait();
     }
 }
+
+
 
 
 
