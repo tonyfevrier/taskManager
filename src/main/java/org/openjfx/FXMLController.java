@@ -49,11 +49,23 @@ public class FXMLController {
         String javafxVersion = System.getProperty("javafx.version");
         label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + "."); 
         TableCreation.createTaskTableIfNotExists();
-        registerButton.setOnAction(this::registerTaskIfFilled);
+        RegisterTask registerTask = new RegisterTask(taskText, taskDate);
+        registerButton.setOnAction(registerTask::registerTaskIfFilled);
     }
 
-    private void registerTaskIfFilled(ActionEvent event){
-        Task task = new Task(taskText, taskDate);
+}
+
+class RegisterTask {
+    private TextField taskText;
+    private DatePicker taskDate;
+
+    public RegisterTask(TextField taskText, DatePicker taskDate){
+        this.taskText = taskText;
+        this.taskDate = taskDate;
+    }
+
+    public void registerTaskIfFilled(ActionEvent event){
+        Task task = new Task(this.taskText, this.taskDate);
         if (task.text.isEmpty()){
             this.showErrorMessage();
             return;
@@ -81,7 +93,7 @@ public class FXMLController {
                 statement.setNull(2, java.sql.Types.TIMESTAMP);
             }
             statement.executeUpdate();
-            taskText.clear();
+            this.taskText.clear();
         } catch (SQLException e){
             e.printStackTrace();
         }
