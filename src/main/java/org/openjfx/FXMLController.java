@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.MenuItem;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,6 +40,8 @@ public class FXMLController {
     private TextField taskText;
     @FXML
     private Label errorRegisterTask; 
+    @FXML 
+    private MenuItem registerATask;
 
     /**
      * Tous les éléments qui ont un comportement spécial après injection doivent être intégrés dans cette méthode :
@@ -51,6 +54,7 @@ public class FXMLController {
         TableCreation.createTaskTableIfNotExists();
         RegisterTask registerTask = new RegisterTask(taskText, taskDate);
         registerButton.setOnAction(registerTask::registerTaskIfFilled);
+        registerATask.setOnAction(event -> {System.out.println("testssgqkjhkh");});
     }
 
 }
