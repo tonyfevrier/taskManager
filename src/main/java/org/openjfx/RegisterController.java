@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
 import org.models.Task;
+import org.openjfx.MenuController;
 
 /**
  * Classe appelée dans scene.fxml pour y intégrer des éléments JavaFX. Par exemple,
@@ -52,15 +53,21 @@ public class RegisterController {
      * éléments dont le texte est changé dynamiquement, qui ont un comportement au clic, etc.
      */ 
     public void initialize() {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + "."); 
+        displaySoftwareInfos();
         TableCreation.createTaskTableIfNotExists();
         RegisterTask registerTask = new RegisterTask(taskText, taskDate);
         registerButton.setOnAction(registerTask::registerTaskIfFilled);
-        registerATask.setOnAction(event -> {System.out.println("testssgqkjhkh");});
+        MenuController menuController = new MenuController();
+        registerATask.setOnAction(event -> menuController.loadTaskPage(event));
+        dayTasks.setOnAction(event -> menuController.loadTaskPage(event));
+        allTasks.setOnAction(event -> menuController.loadTaskPage(event));
     }
 
+    private void displaySoftwareInfos() {
+        String javaVersion = System.getProperty("java.version");
+        String javafxVersion = System.getProperty("javafx.version");
+        label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + "."); 
+    }
 }
 
 class RegisterTask {

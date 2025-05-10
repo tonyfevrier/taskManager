@@ -1,8 +1,40 @@
 package org.openjfx;
 
-class MenuController {
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
+import javafx.stage.Stage;
+import javafx.event.ActionEvent;
 
-    /* Surchargé avec l'élément cliqué.
-     * charger la page associée à l'élément cliqué.
-     */
+public class MenuController {
+    /* Handle the loading of the pages associated with the menu */
+    private Stage stage;
+
+    public void loadTaskPage(ActionEvent event) {
+        try {
+            MenuItem clickedItem = (MenuItem) event.getSource();
+            loadPageCorrespondingTo(clickedItem);
+        } catch (Exception e){
+            e.printStackTrace();
+        } 
+    }
+
+    private void loadPageCorrespondingTo(MenuItem clickedItem) throws Exception {
+        stage = (Stage) clickedItem.getParentPopup().getOwnerWindow();
+
+        if (clickedItem.getId().equals("registerATask")) {
+            load("register.fxml");
+        } else if (clickedItem.getId().equals("dayTasks")) {
+            load("displayTasks.fxml");
+        } else if (clickedItem.getId().equals("allTasks")) {
+            load("displayTasks.fxml");
+        }
+    }
+
+    private void load(String page) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource(page));
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+    }
 }
