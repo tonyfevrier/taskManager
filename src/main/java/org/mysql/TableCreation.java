@@ -32,7 +32,6 @@ public class TableCreation {
                 databaseExists = true;
             }
         }
-        System.out.println(databaseExists);
         return databaseExists;
     }
 
