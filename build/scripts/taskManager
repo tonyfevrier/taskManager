@@ -115,9 +115,9 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
-CLASSPATH="\\\"\\\""
+CLASSPATH=$APP_HOME/lib/mysql-connector-j-8.0.33.jar
 
-MODULE_PATH=$APP_HOME/lib/taskManager.jar:$APP_HOME/lib/javafx-fxml-21-win.jar:$APP_HOME/lib/javafx-controls-21-win.jar:$APP_HOME/lib/javafx-graphics-21-win.jar:$APP_HOME/lib/javafx-base-21-win.jar
+MODULE_PATH=$APP_HOME/lib/taskManager.jar:$APP_HOME/lib/javafx-fxml-21-win.jar:$APP_HOME/lib/javafx-controls-21-win.jar:$APP_HOME/lib/javafx-graphics-21-win.jar:$APP_HOME/lib/protobuf-java-3.21.9.jar:$APP_HOME/lib/javafx-base-21-win.jar
 
 
 # Determine the Java command to use to start the JVM.

@@ -1,16 +1,25 @@
-.main{
-    -alignment: "CENTER";
-}
-
 .label {
     -fx-text-fill: blue;
+    -fx-alignment: "bottom-center";
 }
 
-#register_task {
+#menu{
+    -fx-text-fill: black;
+}
+
+#allTasks{
+    -fx-text-fill: black;
+}
+
+#registerTaskInfos {
     -fx-spacing: 10px;
-    /*-fx-alignment: "CENTER";*/
+    -fx-alignment: "top-center";
 }
 
 #task {
-    -fx-pref-width: 400px;
+    -fx-pref-width: 300px;
+}
+
+#errorRegisterTask {
+    -fx-text-fill: red;
 }

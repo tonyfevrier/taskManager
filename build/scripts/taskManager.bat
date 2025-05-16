@@ -70,8 +70,8 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=
-set MODULE_PATH=%APP_HOME%\lib\taskManager.jar;%APP_HOME%\lib\javafx-fxml-21-win.jar;%APP_HOME%\lib\javafx-controls-21-win.jar;%APP_HOME%\lib\javafx-graphics-21-win.jar;%APP_HOME%\lib\javafx-base-21-win.jar
+set CLASSPATH=%APP_HOME%\lib\mysql-connector-j-8.0.33.jar
+set MODULE_PATH=%APP_HOME%\lib\taskManager.jar;%APP_HOME%\lib\javafx-fxml-21-win.jar;%APP_HOME%\lib\javafx-controls-21-win.jar;%APP_HOME%\lib\javafx-graphics-21-win.jar;%APP_HOME%\lib\protobuf-java-3.21.9.jar;%APP_HOME%\lib\javafx-base-21-win.jar
 
 @rem Execute taskManager
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %TASK_MANAGER_OPTS%  -classpath "%CLASSPATH%" --module-path "%MODULE_PATH%" --module taskManager/org.openjfx.MainApp %*
