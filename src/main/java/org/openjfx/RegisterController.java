@@ -19,6 +19,7 @@ import java.time.LocalDate;
 
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
+import org.mysql.SQLRegisterTask;
 import org.models.Task;
 import org.openjfx.MenuController;
 
@@ -85,7 +86,8 @@ class RegisterTask {
             this.showErrorMessage();
             return;
         }
-        this.register(task);
+        SQLRegisterTask.register(task);
+        this.taskText.clear();
         this.showSuccessfulRegisteringMessage();
     }
 
@@ -94,24 +96,6 @@ class RegisterTask {
         alert.setHeaderText("Invalid task");
         alert.setContentText("You should enter a task");
         alert.showAndWait();
-    }
-
-    private void register(Task task) {
-        /* MySQL registering of a given task */
-        try (Connection connection = DatabaseConnection.getConnection()){
-            String sql = "INSERT INTO tasks (task, created_at) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, task.text);
-            if (task.date != null){
-                statement.setString(2, task.date.toString());
-            } else {
-                statement.setNull(2, java.sql.Types.TIMESTAMP);
-            }
-            statement.executeUpdate();
-            this.taskText.clear();
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     private void showSuccessfulRegisteringMessage(){
