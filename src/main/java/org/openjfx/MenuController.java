@@ -1,6 +1,7 @@
 package org.openjfx;
 
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
@@ -10,6 +11,20 @@ import javafx.event.ActionEvent;
 public class MenuController {
     /* Handle the loading of the pages associated with the menu */
     private Stage stage;
+
+    @FXML 
+    private MenuItem registerATask;
+    @FXML 
+    private MenuItem dayTasks;
+    @FXML
+    private MenuItem allTasks;
+
+
+    public void initialize() {
+        registerATask.setOnAction(event -> loadTaskPage(event));
+        dayTasks.setOnAction(event -> loadTaskPage(event));
+        allTasks.setOnAction(event -> loadTaskPage(event));
+    }
 
     public void loadTaskPage(ActionEvent event) {
         try {
