@@ -16,6 +16,8 @@ import org.mysql.DatabaseConnection;
 
 
 public class DisplayTaskController {
+    /* Handles the creation of fxml elements for displayTasks page */
+
     @FXML
     private MenuItem registerATask;    
     @FXML
@@ -30,6 +32,7 @@ public class DisplayTaskController {
         
     }
 
+    /* contiendra le code ci-dessous de création des élémets fxml */
 }
 
 /*

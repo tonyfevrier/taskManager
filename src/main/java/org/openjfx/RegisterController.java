@@ -28,9 +28,10 @@ import org.openjfx.MenuController;
  * label est appelé via son id dans scene.fxml. 
  */
 public class RegisterController {
-    /* Hendle behaviour of the page registering tasks */
+    /* Hendle behaviour of the fxml page registering tasks */
 
     // Les variables utilisées sous ce descripteur seront reconnues directement dans le fichier fxml 
+    // qui doit avoir sa section principale associée à ce contrôleur
     // et permettent de lier ces éléments du pt de vue java (handler) et du pt de vue fxml
     @FXML
     private Label label;
