@@ -66,6 +66,8 @@ public class RegisterController {
 class RegisterTask {
     private TextField taskText;
     private DatePicker taskDate;
+    private String text;
+    private LocalDate date;
 
     public RegisterTask(TextField taskText, DatePicker taskDate){
         this.taskText = taskText;
@@ -73,14 +75,16 @@ class RegisterTask {
     }
 
     public void registerTaskIfFilled(ActionEvent event){
-        Task task = new Task(this.taskText, this.taskDate);
+        String text = taskText.getText();
+        LocalDate date = taskDate.getValue();
+        Task task = new Task(text, date);//this.taskText, this.taskDate);
         if (task.text.isEmpty()){
-            this.showErrorMessage();
+            showErrorMessage();
             return;
         }
         SQLRegisterTask.register(task);
-        this.taskText.clear();
-        this.showSuccessfulRegisteringMessage();
+        taskText.clear();
+        showSuccessfulRegisteringMessage();
     }
 
     private void showErrorMessage(){

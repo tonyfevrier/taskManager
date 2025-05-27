@@ -8,6 +8,22 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Date;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import java.time.LocalDate;
+
+
+import org.mysql.DatabaseConnection;
+import org.models.Task;
+
+
 public class MenuController {
     /* Handle the loading of the pages associated with the menu */
     private Stage stage;
@@ -44,6 +60,7 @@ interface PageFactory {
     public MenuPage makeMenuPage(MenuItem clickedItem);
 }
 
+
 class PageFactoryImpl implements PageFactory {
 
     public MenuPage makeMenuPage (MenuItem clickedItem){
@@ -52,9 +69,9 @@ class PageFactoryImpl implements PageFactory {
         if (clickedItem.getId().equals("registerATask")){
             return new RegisterPage(stage);
         } else if (clickedItem.getId().equals("dayTasks")){
-            return new DisplayTasksPage(stage);
+            return new DisplayTasksPage(stage, "dayTasks");
         } else {
-            return new DisplayTasksPage(stage);
+            return new DisplayTasksPage(stage, "allTasks");
         }
     }
 }
@@ -95,12 +112,19 @@ class RegisterPage extends MenuPage {
 
 
 class DisplayTasksPage extends MenuPage {
-    public DisplayTasksPage(Stage stage){
+    private String whichTasks;
+
+    public DisplayTasksPage(Stage stage, String whichTasks){
         super(stage);
+        this.whichTasks = whichTasks;
     }
 
     public void preparePageLoading() throws Exception {
             load("displayTasks.fxml");
+            ImportTasksFactory importTasksFactory = new ImportTasksFactory(whichTasks);
+            ImportTasks importTasks = importTasksFactory.chooseImportTasks();
+            List<Task> taskList = importTasks.getTasks();
+            System.out.println(taskList);
     };
 
     private void load(String page) throws Exception {
@@ -108,5 +132,63 @@ class DisplayTasksPage extends MenuPage {
         Scene scene = new Scene(root);
         Stage stage = getStage();
         stage.setScene(scene);
+    }
+}
+
+/* A DEPLACER DANS LE DOSSIER MYSQL */
+
+class ImportTasksFactory {
+    private String whichTasks;
+    public ImportTasksFactory(String whichTasks){
+        this.whichTasks = whichTasks;
+    }
+
+    public ImportTasks chooseImportTasks(){
+        if (whichTasks.equals("allTasks")){
+            return new ImportAllTasks();
+        } else {
+            return new ImportDayTasks();
+        }
+    }
+} 
+
+
+interface ImportTasks { 
+    public List<Task> getTasks();
+}
+
+
+class ImportAllTasks implements ImportTasks {
+    private List<Task> taskList = new ArrayList<>();
+
+    public List<Task> getTasks() {
+        try (Connection connection = DatabaseConnection.getConnection()){
+            String sql = "SELECT id, task, created_at FROM tasks";
+            Statement statement = connection.createStatement();
+            ResultSet taskSet = statement.executeQuery(sql);
+            while (taskSet.next()){
+                String text = taskSet.getString("task");
+                Date sqlDate = taskSet.getDate("created_at");
+                Integer id = taskSet.getInt("id");
+                if (sqlDate != null){
+                    LocalDate created_at = sqlDate.toLocalDate();
+                    taskList.add(new Task(text, created_at, id));
+                } else {
+                    taskList.add(new Task(text, null, id));
+                }
+            }
+            return taskList;
+        } catch (SQLException e){
+            e.printStackTrace();
+            return taskList;
+        }
+    }
+}
+
+class ImportDayTasks implements ImportTasks {
+    private List<Task> taskList;
+
+    public List<Task> getTasks() {
+        return taskList;
     }
 }

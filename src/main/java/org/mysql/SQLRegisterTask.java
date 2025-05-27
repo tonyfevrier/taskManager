@@ -6,6 +6,7 @@ import org.models.Task;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Date;
 
 
 public class SQLRegisterTask {
@@ -17,9 +18,9 @@ public class SQLRegisterTask {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, task.text);
             if (task.date != null){
-                statement.setString(2, task.date.toString());
+                statement.setDate(2, Date.valueOf(task.date));
             } else {
-                statement.setNull(2, java.sql.Types.TIMESTAMP);
+                statement.setNull(2, java.sql.Types.DATE);
             }
             statement.executeUpdate();
         } catch (SQLException e){

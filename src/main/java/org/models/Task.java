@@ -9,9 +9,17 @@ import java.time.LocalDate;
 public class Task {
     public String text;
     public LocalDate date;
+    public Integer id;
 
-    public Task(TextField taskText, DatePicker taskDate){
-        this.text = taskText.getText();
-        this.date = taskDate.getValue();
+    public Task(String text, LocalDate date) {//TextField taskText, DatePicker taskDate){
+        this.text = text; //taskText.getText();
+        this.date = date; //taskDate.getValue();
+        this.id = null; 
+    }
+
+    public Task(String text, LocalDate date, Integer id) {//TextField taskText, DatePicker taskDate){
+        this.text = text; //taskText.getText();
+        this.date = date; //taskDate.getValue();
+        this.id = id; 
     }
 }
