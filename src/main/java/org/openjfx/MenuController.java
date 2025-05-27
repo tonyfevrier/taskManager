@@ -8,20 +8,12 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Date;
-
 import java.util.List;
-import java.util.ArrayList;
 
-import java.time.LocalDate;
-
-
-import org.mysql.DatabaseConnection;
+import org.mysql.ImportTasksFactory;
+import org.mysql.ImportTasks;
 import org.models.Task;
+import org.openjfx.DisplayTaskController;
 
 
 public class MenuController {
@@ -113,6 +105,7 @@ class RegisterPage extends MenuPage {
 
 class DisplayTasksPage extends MenuPage {
     private String whichTasks;
+    private FXMLLoader loader;
 
     public DisplayTasksPage(Stage stage, String whichTasks){
         super(stage);
@@ -120,75 +113,32 @@ class DisplayTasksPage extends MenuPage {
     }
 
     public void preparePageLoading() throws Exception {
-            load("displayTasks.fxml");
-            ImportTasksFactory importTasksFactory = new ImportTasksFactory(whichTasks);
-            ImportTasks importTasks = importTasksFactory.chooseImportTasks();
-            List<Task> taskList = importTasks.getTasks();
-            System.out.println(taskList);
+            load("displayTasks.fxml", getTaskList());
     };
 
-    private void load(String page) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(page));
+    private List<Task> getTaskList(){
+        ImportTasksFactory importTasksFactory = new ImportTasksFactory(whichTasks);
+        ImportTasks importTasks = importTasksFactory.chooseImportTasks();
+        return importTasks.getTasks();
+    }
+
+    private void load(String page, List<Task> taskList) throws Exception {
+        // The page necessitates a task list to display on the page
+        loader = new FXMLLoader(getClass().getResource(page));
+        buildPageController(taskList);
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         Stage stage = getStage();
         stage.setScene(scene);
     }
-}
 
-/* A DEPLACER DANS LE DOSSIER MYSQL */
-
-class ImportTasksFactory {
-    private String whichTasks;
-    public ImportTasksFactory(String whichTasks){
-        this.whichTasks = whichTasks;
-    }
-
-    public ImportTasks chooseImportTasks(){
-        if (whichTasks.equals("allTasks")){
-            return new ImportAllTasks();
-        } else {
-            return new ImportDayTasks();
-        }
-    }
-} 
-
-
-interface ImportTasks { 
-    public List<Task> getTasks();
-}
-
-
-class ImportAllTasks implements ImportTasks {
-    private List<Task> taskList = new ArrayList<>();
-
-    public List<Task> getTasks() {
-        try (Connection connection = DatabaseConnection.getConnection()){
-            String sql = "SELECT id, task, created_at FROM tasks";
-            Statement statement = connection.createStatement();
-            ResultSet taskSet = statement.executeQuery(sql);
-            while (taskSet.next()){
-                String text = taskSet.getString("task");
-                Date sqlDate = taskSet.getDate("created_at");
-                Integer id = taskSet.getInt("id");
-                if (sqlDate != null){
-                    LocalDate created_at = sqlDate.toLocalDate();
-                    taskList.add(new Task(text, created_at, id));
-                } else {
-                    taskList.add(new Task(text, null, id));
-                }
-            }
-            return taskList;
-        } catch (SQLException e){
-            e.printStackTrace();
-            return taskList;
-        }
+    private void buildPageController(List<Task> taskList) {
+        /* Pass the task list to the fxml controller of the page */
+        DisplayTaskController controller = new DisplayTaskController();
+        controller.setTaskList(taskList);
+        loader.setController(controller);
     }
 }
 
-class ImportDayTasks implements ImportTasks {
-    private List<Task> taskList;
 
-    public List<Task> getTasks() {
-        return taskList;
-    }
-}
+

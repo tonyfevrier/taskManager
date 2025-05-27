@@ -11,6 +11,10 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.List;
+import java.time.LocalDate;
+
+import org.models.Task;
 import org.openjfx.MenuController;
 import org.mysql.DatabaseConnection;
 
@@ -18,55 +22,36 @@ import org.mysql.DatabaseConnection;
 public class DisplayTaskController {
     /* Handles the creation of fxml elements for displayTasks page */
 
-    @FXML
-    private MenuItem registerATask;    
-    @FXML
-    private MenuItem dayTasks;    
-    @FXML
-    private MenuItem allTasks;
-    @FXML
-    private VBox taskList;
+    private List<Task> taskList;
 
+    @FXML
+    private VBox taskListVBox;
 
-    public void initialize(){
-        
+    public void setTaskList(List<Task> taskList) {
+            this.taskList = taskList;
     }
 
-    /* contiendra le code ci-dessous de création des élémets fxml */
-}
-
-/*
-abstract class ImportTasks {
-    public void importTasks();
-}
-
-
-class ImportAllTasks extends ImportTasks {
-
-    private ResultSet taskSet;
-
-    public void importTasks() {
-        try (Connection connection = DatabaseConnection.getConnection()){
-            getAllTasks();
-            while (taskSet.next()){
-                HBox taskLine = new HBox();
-                taskLine.setId("taskLine_" + taskSet.getString(1));
-                Text taskText = new Text(taskSet.getString(2));
-                Text taskDate = new Text(taskSet.getString(3));
-                taskLine.getChildren().add(taskDate);
-                taskLine.getChildren().add(taskText);
-                taskList.getChildren().add(taskLine);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
+    public void initialize(){
+        /* on crée une HBox par élt de ask List qu'on ajoute à Vbox */
+        for (Task task : taskList){
+            addTaskToVBox(task);
         }
     }
 
-    private ResultSet getAllTasks() {
-        String sql = "SELECT id, task, created_at FROM tasks";
-        Statement statement = connection.createStatement();
-        taskSet = statement.executeQuery(sql);
+    private void addTaskToVBox(Task task) {
+        HBox taskLine = new HBox();
+        taskLine = fillTaskLine(task, taskLine);
+        taskListVBox.getChildren().add(taskLine);
     }
 
-
-} */
+    private HBox fillTaskLine(Task task, HBox taskLine) {
+        Text date = new Text();
+        if (task.date != null){
+            date.setText(task.date.toString());
+        }
+        taskLine.getChildren().add(date);
+        Text text = new Text(task.text);
+        taskLine.getChildren().add(text);
+        return taskLine;
+    }
+}

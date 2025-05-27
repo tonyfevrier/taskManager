@@ -11,15 +11,21 @@ public class Task {
     public LocalDate date;
     public Integer id;
 
-    public Task(String text, LocalDate date) {//TextField taskText, DatePicker taskDate){
-        this.text = text; //taskText.getText();
-        this.date = date; //taskDate.getValue();
+    public Task(String text, LocalDate date) {
+        this.text = text; 
+        this.date = date; 
         this.id = null; 
     }
 
-    public Task(String text, LocalDate date, Integer id) {//TextField taskText, DatePicker taskDate){
-        this.text = text; //taskText.getText();
-        this.date = date; //taskDate.getValue();
+    public Task(String text, LocalDate date, Integer id) {
+        this.text = text;
+        this.date = date; 
+        this.id = id; 
+    }
+
+    public Task(String text,  Integer id) {
+        this.text = text;
+        this.date = null; 
         this.id = id; 
     }
 }
