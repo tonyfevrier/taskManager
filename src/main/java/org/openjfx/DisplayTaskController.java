@@ -1,10 +1,16 @@
 package org.openjfx;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
+import javafx.geometry.Pos;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -23,35 +29,34 @@ public class DisplayTaskController {
     /* Handles the creation of fxml elements for displayTasks page */
 
     private List<Task> taskList;
+    private TableView<Task> taskTable = new TableView<>();
 
     @FXML
     private VBox taskListVBox;
 
     public void setTaskList(List<Task> taskList) {
-            this.taskList = taskList;
+        this.taskList = taskList;
     }
 
     public void initialize(){
-        /* on crée une HBox par élt de ask List qu'on ajoute à Vbox */
-        for (Task task : taskList){
-            addTaskToVBox(task);
-        }
+        createTaskTable();
+        fillTable(); 
     }
 
-    private void addTaskToVBox(Task task) {
-        HBox taskLine = new HBox();
-        taskLine = fillTaskLine(task, taskLine);
-        taskListVBox.getChildren().add(taskLine);
+    private void createTaskTable() {
+        taskTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);// column take all horizontal place
+        TableColumn<Task,String> columnDate = new TableColumn<>("Date");
+        TableColumn<Task,String> columnTask = new TableColumn<>("Task");
+        columnDate.setCellValueFactory(new PropertyValueFactory<>("date"));// link the column to an attribute of class Task to allow to fill the table
+        columnTask.setCellValueFactory(new PropertyValueFactory<>("text"));
+        taskTable.getColumns().addAll(columnDate, columnTask);
+        taskListVBox.getChildren().add(taskTable);
+        VBox.setVgrow(taskTable, Priority.ALWAYS); // fill vertically the window with table rows when window is widened
     }
 
-    private HBox fillTaskLine(Task task, HBox taskLine) {
-        Text date = new Text();
-        if (task.date != null){
-            date.setText(task.date.toString());
+    private void fillTable() {
+        for (Task task:taskList) {
+            taskTable.getItems().add(task);
         }
-        taskLine.getChildren().add(date);
-        Text text = new Text(task.text);
-        taskLine.getChildren().add(text);
-        return taskLine;
     }
 }

@@ -97,6 +97,7 @@ class RegisterPage extends MenuPage {
     private void load(String page) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(page));
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm()); // add prend une URL absolue sous forme de str (ce que permet toExternalForm)
         Stage stage = getStage();
         stage.setScene(scene);
     }

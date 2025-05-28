@@ -28,4 +28,12 @@ public class Task {
         this.date = null; 
         this.id = id; 
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public String getText() {
+        return text;
+    }
 }
