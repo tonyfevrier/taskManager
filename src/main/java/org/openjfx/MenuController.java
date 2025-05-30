@@ -10,8 +10,8 @@ import javafx.event.ActionEvent;
 
 import java.util.List;
 
-import org.mysql.ImportTasksFactory;
-import org.mysql.ImportTasks;
+import org.mysql.ExtractSQLDataFactory;
+import org.mysql.ExtractSQLData;
 import org.models.Task;
 import org.openjfx.DisplayTaskController;
 
@@ -118,9 +118,10 @@ class DisplayTasksPage extends MenuPage {
     };
 
     private List<Task> getTaskList(){
-        ImportTasksFactory importTasksFactory = new ImportTasksFactory(whichTasks);
-        ImportTasks importTasks = importTasksFactory.chooseImportTasks();
-        return importTasks.getTasks();
+        ExtractSQLDataFactory extractSQLDataFactory = new ExtractSQLDataFactory(whichTasks);
+        ExtractSQLData importTasks = extractSQLDataFactory.chooseSQLData();
+        return importTasks.getData();
+
     }
 
     private void load(String page, List<Task> taskList) throws Exception {

@@ -15,7 +15,52 @@ import org.mysql.DatabaseConnection;
 import org.models.Task;
 
 
-public interface ImportTasks { 
+public abstract class ExtractSQLData {
+    public abstract List getData();
+}
+
+
+class ImportTasks extends ExtractSQLData {
+    private ResultSet taskSet;
+    private String sql;
+
+    public ImportTasks(String sql){
+        this.sql = sql;
+    }
+
+    public List<Task> getData() {
+        List<Task> taskList = new ArrayList<>();
+        try (Connection connection = DatabaseConnection.getConnection()){
+            taskSet = extractTasksFromDatabase(connection);
+            return storeTasksIn(taskList); 
+        } catch (SQLException e){
+            e.printStackTrace();
+            return taskList;
+        }
+    }
+
+    private ResultSet extractTasksFromDatabase(Connection connection) throws SQLException {
+        Statement statement = connection.createStatement();
+        return statement.executeQuery(sql);
+    }
+
+    private List<Task> storeTasksIn(List<Task> taskList) throws SQLException {
+        while (taskSet.next()){
+            String text = taskSet.getString("task");
+            Date sqlDate = taskSet.getDate("created_at");
+            Integer id = taskSet.getInt("id");
+            if (sqlDate != null){
+                LocalDate created_at = sqlDate.toLocalDate();
+                taskList.add(new Task(text, created_at, id));
+            } else {
+                taskList.add(new Task(text, id));
+            }
+        }
+        return taskList;
+    }
+}
+
+/*public interface ImportTasks { 
     public List<Task> getTasks();
 }
 
@@ -64,3 +109,4 @@ class ImportDayTasks implements ImportTasks {
         return taskList;
     }
 }
+*/
