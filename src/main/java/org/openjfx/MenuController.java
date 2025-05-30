@@ -8,10 +8,15 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
+import java.sql.SQLException;
+import java.sql.Connection;
+
 import java.util.List;
+import java.util.ArrayList;
 
 import org.mysql.ExtractSQLDataFactory;
 import org.mysql.ExtractSQLData;
+import org.mysql.DatabaseConnection;
 import org.models.Task;
 import org.openjfx.DisplayTaskController;
 
@@ -118,9 +123,14 @@ class DisplayTasksPage extends MenuPage {
     };
 
     private List<Task> getTaskList(){
-        ExtractSQLDataFactory extractSQLDataFactory = new ExtractSQLDataFactory(whichTasks);
-        ExtractSQLData importTasks = extractSQLDataFactory.chooseSQLData();
-        return importTasks.getData();
+        try (Connection connection = DatabaseConnection.getConnection()){
+            ExtractSQLDataFactory extractSQLDataFactory = new ExtractSQLDataFactory(whichTasks, connection);
+            ExtractSQLData importTasks = extractSQLDataFactory.chooseSQLData();
+            return importTasks.getData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
 
     }
 

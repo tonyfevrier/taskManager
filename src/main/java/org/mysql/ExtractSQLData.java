@@ -16,27 +16,25 @@ import org.models.Task;
 
 
 public abstract class ExtractSQLData {
-    public abstract List getData();
+    public abstract List getData() throws SQLException;
 }
 
 
 class ImportTasks extends ExtractSQLData {
+    /* Handles the extraction of specific tasks depending on the sql string. */
     private ResultSet taskSet;
     private String sql;
+    private Connection connection;
 
-    public ImportTasks(String sql){
+    public ImportTasks(String sql, Connection connection){
         this.sql = sql;
+        this.connection = connection;
     }
 
-    public List<Task> getData() {
+    public List<Task> getData() throws SQLException {
         List<Task> taskList = new ArrayList<>();
-        try (Connection connection = DatabaseConnection.getConnection()){
-            taskSet = extractTasksFromDatabase(connection);
-            return storeTasksIn(taskList); 
-        } catch (SQLException e){
-            e.printStackTrace();
-            return taskList;
-        }
+        taskSet = extractTasksFromDatabase(connection);
+        return storeTasksIn(taskList); 
     }
 
     private ResultSet extractTasksFromDatabase(Connection connection) throws SQLException {

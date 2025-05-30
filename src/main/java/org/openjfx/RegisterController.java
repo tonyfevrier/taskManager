@@ -50,10 +50,15 @@ public class RegisterController {
      * éléments dont le texte est changé dynamiquement, qui ont un comportement au clic, etc.
      */ 
     public void initialize() {
-        displaySoftwareInfos();
-        TableCreation.createTaskTableIfNotExists();
-        RegisterTask registerTask = new RegisterTask(taskText, taskDate);
-        registerButton.setOnAction(registerTask::registerTaskIfFilled);
+        try (Connection connection = DatabaseConnection.getConnection()){
+            displaySoftwareInfos();
+            TableCreation tableCreation = new TableCreation(connection);
+            tableCreation.createTaskTableIfNotExists();
+            RegisterTask registerTask = new RegisterTask(taskText, taskDate);
+            registerButton.setOnAction(event -> registerTask.registerTaskIfFilled(event));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void displaySoftwareInfos() {
@@ -75,16 +80,21 @@ class RegisterTask {
     }
 
     public void registerTaskIfFilled(ActionEvent event){
-        String text = taskText.getText();
-        LocalDate date = taskDate.getValue();
-        Task task = new Task(text, date);//this.taskText, this.taskDate);
-        if (task.text.isEmpty()){
-            showErrorMessage();
-            return;
+        try (Connection connection = DatabaseConnection.getConnection()){
+            String text = taskText.getText();
+            LocalDate date = taskDate.getValue();
+            Task task = new Task(text, date);
+            if (task.text.isEmpty()){
+                showErrorMessage();
+                return;
+            }
+            SQLRegisterTask sqlRegister = new SQLRegisterTask(connection);
+            sqlRegister.register(task);
+            taskText.clear();
+            showSuccessfulRegisteringMessage();
+        } catch (SQLException e){
+            e.printStackTrace();
         }
-        SQLRegisterTask.register(task);
-        taskText.clear();
-        showSuccessfulRegisteringMessage();
     }
 
     private void showErrorMessage(){
