@@ -37,7 +37,7 @@ public class TableCreation {
 
     private static void createTaskTable(Connection connection) throws SQLException {
         String use_database_sql = "USE task_manager;";
-        String create_table_sql = "CREATE TABLE tasks (id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(255) NOT NULL, created_at DATE DEFAULT NULL);";
+        String create_table_sql = "CREATE TABLE tasks (id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(1000) NOT NULL, created_at DATE DEFAULT NULL);";
         Statement statement = connection.createStatement();
         statement.execute(use_database_sql);
         statement.execute(create_table_sql);

@@ -3,12 +3,17 @@
  */
 package test;
 
-/*import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.mysql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+
 class AppTest {
-    @Test void appHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
+    @Test void testMySQLConnection() throws SQLException {
+        DatabaseConnection bddConnection = new DatabaseConnection();
+        assertInstanceOf(Connection.class, bddConnection.getConnection());
     }
-}*/
+}
