@@ -15,17 +15,7 @@
 
 <VBox styleClass="main" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openjfx.RegisterController">   
    <children>
-      <MenuBar fx:id="menubar">
-         <menus>
-            <Menu text="Tasks" fx:id="menu">
-               <items>
-                  <MenuItem text="Register task" fx:id="registerATask"/>
-                  <MenuItem text="Day tasks" fx:id="dayTasks"/>
-                  <MenuItem text="All tasks" fx:id="allTasks"/>
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
+      <fx:include source="menu.fxml"/>
       <HBox fx:id="registerTaskInfos"> 
             <DatePicker fx:id="taskDate"/>
             <TextField fx:id="taskText" promptText="Enter a task" />

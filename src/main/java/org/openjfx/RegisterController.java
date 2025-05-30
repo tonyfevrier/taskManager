@@ -19,6 +19,7 @@ import java.time.LocalDate;
 
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
+import org.mysql.SQLRegisterTask;
 import org.models.Task;
 import org.openjfx.MenuController;
 
@@ -27,9 +28,10 @@ import org.openjfx.MenuController;
  * label est appelé via son id dans scene.fxml. 
  */
 public class RegisterController {
-    
+    /* Hendle behaviour of the fxml page registering tasks */
 
     // Les variables utilisées sous ce descripteur seront reconnues directement dans le fichier fxml 
+    // qui doit avoir sa section principale associée à ce contrôleur
     // et permettent de lier ces éléments du pt de vue java (handler) et du pt de vue fxml
     @FXML
     private Label label;
@@ -41,12 +43,7 @@ public class RegisterController {
     private TextField taskText;
     @FXML
     private Label errorRegisterTask; 
-    @FXML 
-    private MenuItem registerATask;
-    @FXML 
-    private MenuItem dayTasks;
-    @FXML
-    private MenuItem allTasks;
+    
 
     /**
      * Tous les éléments qui ont un comportement spécial après injection doivent être intégrés dans cette méthode :
@@ -57,10 +54,6 @@ public class RegisterController {
         TableCreation.createTaskTableIfNotExists();
         RegisterTask registerTask = new RegisterTask(taskText, taskDate);
         registerButton.setOnAction(registerTask::registerTaskIfFilled);
-        MenuController menuController = new MenuController();
-        registerATask.setOnAction(event -> menuController.loadTaskPage(event));
-        dayTasks.setOnAction(event -> menuController.loadTaskPage(event));
-        allTasks.setOnAction(event -> menuController.loadTaskPage(event));
     }
 
     private void displaySoftwareInfos() {
@@ -73,6 +66,8 @@ public class RegisterController {
 class RegisterTask {
     private TextField taskText;
     private DatePicker taskDate;
+    private String text;
+    private LocalDate date;
 
     public RegisterTask(TextField taskText, DatePicker taskDate){
         this.taskText = taskText;
@@ -80,13 +75,16 @@ class RegisterTask {
     }
 
     public void registerTaskIfFilled(ActionEvent event){
-        Task task = new Task(this.taskText, this.taskDate);
+        String text = taskText.getText();
+        LocalDate date = taskDate.getValue();
+        Task task = new Task(text, date);//this.taskText, this.taskDate);
         if (task.text.isEmpty()){
-            this.showErrorMessage();
+            showErrorMessage();
             return;
         }
-        this.register(task);
-        this.showSuccessfulRegisteringMessage();
+        SQLRegisterTask.register(task);
+        taskText.clear();
+        showSuccessfulRegisteringMessage();
     }
 
     private void showErrorMessage(){
@@ -94,24 +92,6 @@ class RegisterTask {
         alert.setHeaderText("Invalid task");
         alert.setContentText("You should enter a task");
         alert.showAndWait();
-    }
-
-    private void register(Task task) {
-        /* MySQL registering of a given task */
-        try (Connection connection = DatabaseConnection.getConnection()){
-            String sql = "INSERT INTO tasks (task, created_at) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, task.text);
-            if (task.date != null){
-                statement.setString(2, task.date.toString());
-            } else {
-                statement.setNull(2, java.sql.Types.TIMESTAMP);
-            }
-            statement.executeUpdate();
-            this.taskText.clear();
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     private void showSuccessfulRegisteringMessage(){
