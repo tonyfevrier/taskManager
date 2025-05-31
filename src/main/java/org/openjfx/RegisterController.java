@@ -20,8 +20,7 @@ import java.time.LocalDate;
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
 import org.mysql.SQLRegisterTask;
-import org.models.MySQLCredentials;
-import org.models.Task;
+import org.models.*;
 import org.openjfx.MenuController;
 
 /**
@@ -53,9 +52,10 @@ public class RegisterController {
     public void initialize() {
         try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
             displaySoftwareInfos();
-            TableCreation tableCreation = new TableCreation(connection);
+            Database database = new ProductionDatabase();
+            TableCreation tableCreation = new TableCreation(connection, database);
             tableCreation.createTaskTableIfNotExists();
-            RegisterTask registerTask = new RegisterTask(taskText, taskDate);
+            RegisterTask registerTask = new RegisterTask(taskText, taskDate, database);
             registerButton.setOnAction(event -> registerTask.registerTaskIfFilled(event));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -74,10 +74,12 @@ class RegisterTask {
     private DatePicker taskDate;
     private String text;
     private LocalDate date;
+    private Database database;
 
-    public RegisterTask(TextField taskText, DatePicker taskDate){
+    public RegisterTask(TextField taskText, DatePicker taskDate, Database database){
         this.taskText = taskText;
         this.taskDate = taskDate;
+        this.database = database;
     }
 
     public void registerTaskIfFilled(ActionEvent event){
@@ -89,7 +91,7 @@ class RegisterTask {
                 showErrorMessage();
                 return;
             }
-            SQLRegisterTask sqlRegister = new SQLRegisterTask(connection);
+            SQLRegisterTask sqlRegister = new SQLRegisterTask(connection, database);
             sqlRegister.register(task);
             taskText.clear();
             showSuccessfulRegisteringMessage();

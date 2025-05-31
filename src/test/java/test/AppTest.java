@@ -17,4 +17,8 @@ class AppTest {
         DatabaseConnection bddConnection = new DatabaseConnection();
         assertInstanceOf(Connection.class, bddConnection.getConnection(new TestCredentials()));
     }
+
+    @Test void testTableCreation() {
+        
+    }
 }

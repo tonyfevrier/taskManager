@@ -1,6 +1,6 @@
 package org.mysql;
 
-import org.models.Task;
+import org.models.*;
 
 import java.sql.SQLException;
 import java.sql.Connection;
@@ -10,14 +10,16 @@ import java.sql.Date;
 
 public class SQLRegisterTask {
     private Connection connection;
+    private Database database;
 
-    public SQLRegisterTask(Connection connection){
+    public SQLRegisterTask(Connection connection, Database database){
         this.connection = connection;
+        this.database = database;
     }
 
     public void register(Task task) throws SQLException {
         /* MySQL registering of a given task */
-        String sql = "INSERT INTO tasks (task, created_at) VALUES (?, ?)";
+        String sql = "INSERT INTO " + database.tableName + " (task, created_at) VALUES (?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, task.text);
         if (task.date != null){
