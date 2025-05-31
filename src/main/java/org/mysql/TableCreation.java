@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Connection;
 
-import org.mysql.DatabaseConnection;
-
 
 public class TableCreation {
     /* Create task table in task_manager database */

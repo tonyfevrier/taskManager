@@ -18,6 +18,7 @@ import org.mysql.ExtractSQLDataFactory;
 import org.mysql.ExtractSQLData;
 import org.mysql.DatabaseConnection;
 import org.models.Task;
+import org.models.MySQLCredentials;
 import org.openjfx.DisplayTaskController;
 
 
@@ -123,7 +124,7 @@ class DisplayTasksPage extends MenuPage {
     };
 
     private List<Task> getTaskList(){
-        try (Connection connection = DatabaseConnection.getConnection()){
+        try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
             ExtractSQLDataFactory extractSQLDataFactory = new ExtractSQLDataFactory(whichTasks, connection);
             ExtractSQLData importTasks = extractSQLDataFactory.chooseSQLData();
             return importTasks.getData();

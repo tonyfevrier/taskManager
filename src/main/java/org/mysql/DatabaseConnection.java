@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.models.Credentials;
 
-public class DatabaseConnection {
+
+/*public class DatabaseConnection {
     private static String URL = "jdbc:mysql://localhost:3306/task_manager";
     private static String username = "tony";
     private static String password = "tony";
@@ -14,4 +16,13 @@ public class DatabaseConnection {
         return DriverManager.getConnection(URL, username, password);
     }
 
+}*/
+
+public class DatabaseConnection {
+
+    public static Connection getConnection(Credentials credentials) throws SQLException{
+        return DriverManager.getConnection(credentials.getURL(), credentials.getUsername(), credentials.getPassword());
+    }
+
 }
+

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mysql.*;
+import org.models.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -14,6 +15,6 @@ import java.sql.SQLException;
 class AppTest {
     @Test void testMySQLConnection() throws SQLException {
         DatabaseConnection bddConnection = new DatabaseConnection();
-        assertInstanceOf(Connection.class, bddConnection.getConnection());
+        assertInstanceOf(Connection.class, bddConnection.getConnection(new TestCredentials()));
     }
 }

@@ -1,6 +1,5 @@
 package org.mysql;
 
-import org.mysql.DatabaseConnection;
 import org.models.Task;
 
 import java.sql.SQLException;

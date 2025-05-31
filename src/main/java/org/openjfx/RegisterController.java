@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
 import org.mysql.SQLRegisterTask;
+import org.models.MySQLCredentials;
 import org.models.Task;
 import org.openjfx.MenuController;
 
@@ -50,7 +51,7 @@ public class RegisterController {
      * éléments dont le texte est changé dynamiquement, qui ont un comportement au clic, etc.
      */ 
     public void initialize() {
-        try (Connection connection = DatabaseConnection.getConnection()){
+        try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
             displaySoftwareInfos();
             TableCreation tableCreation = new TableCreation(connection);
             tableCreation.createTaskTableIfNotExists();
@@ -80,7 +81,7 @@ class RegisterTask {
     }
 
     public void registerTaskIfFilled(ActionEvent event){
-        try (Connection connection = DatabaseConnection.getConnection()){
+        try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
             String text = taskText.getText();
             LocalDate date = taskDate.getValue();
             Task task = new Task(text, date);
