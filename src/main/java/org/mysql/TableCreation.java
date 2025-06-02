@@ -20,6 +20,7 @@ public class TableCreation {
     public void createTaskTableIfNotExists() throws SQLException{
         boolean tableExists = doesTaskTableExists();
         if (!tableExists){
+            chooseDatabase();
             createTaskTable();
         }
     }
@@ -38,11 +39,15 @@ public class TableCreation {
         return tableExists;
     }
 
-    private void createTaskTable() throws SQLException {
+    private void chooseDatabase() throws SQLException {
         String use_database_sql = "USE " + database.databaseName + ";";
-        String create_table_sql = "CREATE TABLE " + database.tableName +"(id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(1000) NOT NULL, created_at DATE DEFAULT NULL);";
         Statement statement = connection.createStatement();
         statement.execute(use_database_sql);
+    }
+
+    public void createTaskTable() throws SQLException {
+        String create_table_sql = "CREATE TABLE " + database.tableName + " (id INT AUTO_INCREMENT PRIMARY KEY, task VARCHAR(1000) NOT NULL, created_at DATE DEFAULT NULL);";
+        Statement statement = connection.createStatement();
         statement.execute(create_table_sql);
     }
 }

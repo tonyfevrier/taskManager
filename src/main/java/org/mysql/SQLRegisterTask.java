@@ -21,9 +21,9 @@ public class SQLRegisterTask {
         /* MySQL registering of a given task */
         String sql = "INSERT INTO " + database.tableName + " (task, created_at) VALUES (?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, task.text);
-        if (task.date != null){
-            statement.setDate(2, Date.valueOf(task.date));
+        statement.setString(1, task.getText());
+        if (task.getDate() != null){
+            statement.setDate(2, Date.valueOf(task.getDate()));
         } else {
             statement.setNull(2, java.sql.Types.DATE);
         }

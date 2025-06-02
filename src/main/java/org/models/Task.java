@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 
 public class Task {
-    public String text;
-    public LocalDate date;
-    public Integer id;
+    private String text;
+    private LocalDate date;
+    private Integer id;
 
     public Task(String text, LocalDate date) {
         this.text = text; 
@@ -27,6 +27,10 @@ public class Task {
         this.text = text;
         this.date = null; 
         this.id = id; 
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public LocalDate getDate() {

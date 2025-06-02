@@ -87,7 +87,7 @@ class RegisterTask {
             String text = taskText.getText();
             LocalDate date = taskDate.getValue();
             Task task = new Task(text, date);
-            if (task.text.isEmpty()){
+            if (task.getText().isEmpty()){
                 showErrorMessage();
                 return;
             }
