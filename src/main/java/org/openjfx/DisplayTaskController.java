@@ -3,6 +3,7 @@ package org.openjfx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -11,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
+import javafx.beans.property.ReadOnlyObjectProperty;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -40,6 +42,7 @@ public class DisplayTaskController {
     public void initialize(){
         createTaskTable();
         fillTable(); 
+        addModificationsButtons();
     }
 
     private void createTaskTable() {
@@ -57,5 +60,19 @@ public class DisplayTaskController {
         for (Task task:taskList) {
             taskTable.getItems().add(task);
         }
+    }
+
+    private void addModificationsButtons() {
+        HBox buttonBox = new HBox();
+        Button deleteButton = new Button("Delete task");
+        Button modifyButton = new Button("Modify task");
+
+        // Buttons are disabled if no task is selected
+        ReadOnlyObjectProperty<Task> selectedItem = taskTable.getSelectionModel().selectedItemProperty();        
+        deleteButton.disableProperty().bind(selectedItem.isNull());
+        modifyButton.disableProperty().bind(selectedItem.isNull());
+
+        buttonBox.getChildren().addAll(deleteButton, modifyButton);
+        taskListVBox.getChildren().add(buttonBox);
     }
 }
