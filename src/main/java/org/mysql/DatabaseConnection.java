@@ -7,17 +7,6 @@ import java.sql.SQLException;
 import org.models.Credentials;
 
 
-/*public class DatabaseConnection {
-    private static String URL = "jdbc:mysql://localhost:3306/task_manager";
-    private static String username = "tony";
-    private static String password = "tony";
-
-    public static Connection getConnection() throws SQLException{
-        return DriverManager.getConnection(URL, username, password);
-    }
-
-}*/
-
 public class DatabaseConnection {
 
     public static Connection getConnection(Credentials credentials) throws SQLException{

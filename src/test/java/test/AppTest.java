@@ -28,14 +28,14 @@ class MySQLTest {
 
     @Test void testTableCreation() {
         try {
-            createTableToTest();
+            createTable();
             checkIfTableCreated();
         } catch (SQLException e){
             e.printStackTrace();
         }
     }
 
-    private void createTableToTest() throws SQLException {
+    private void createTable() throws SQLException {
         bddConnection = DatabaseConnection.getConnection(new TestCredentials());
         database = new TestDatabase();
         TableCreation tableCreation = new TableCreation(bddConnection, database);
@@ -57,8 +57,8 @@ class MySQLTest {
 
     @Test void testSQLRegister(){
         try {
+            createTable();
             Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
-            createTableToTest();
             registerA(task);
             checkIfTaskRegistered(task);
         } catch (SQLException e){
@@ -84,13 +84,10 @@ class MySQLTest {
     @Test void testSQLExtractAllTasks(){
         try {
             Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
-            createTableToTest();
+            createTable();
             registerA(task);
             List<Task> taskList = extractTask("allTasks");
-            assertEquals(1, taskList.size());
-            assertEquals(0, taskList.get(0).getId());
-            assertEquals(task.getText(), taskList.get(0).getText());
-            assertEquals(task.getDate().toString(), taskList.get(0).getDate().toString());
+            checkExtraction(task, taskList);
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -101,7 +98,10 @@ class MySQLTest {
         return sqlData.getData();
     }
 
-    @Test void testSQLExtractDayTasks(){
-
+    private void checkExtraction(Task task, List<Task> taskList){
+        assertEquals(1, taskList.size());
+        assertEquals(0, taskList.get(0).getId());
+        assertEquals(task.getText(), taskList.get(0).getText());
+        assertEquals(task.getDate().toString(), taskList.get(0).getDate().toString());    
     }
 }

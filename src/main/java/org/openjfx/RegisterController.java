@@ -102,6 +102,7 @@ class RegisterTask {
 
     private void showErrorMessage(){
         Alert alert = new Alert(AlertType.ERROR);
+        alert.getDialogPane().getStyleClass().add("alert");
         alert.setHeaderText("Invalid task");
         alert.setContentText("You should enter a task");
         alert.showAndWait();
