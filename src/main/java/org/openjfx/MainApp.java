@@ -12,10 +12,8 @@ public class MainApp extends Application {
     @Override 
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("register.fxml"));
-        
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm()); // add prend une URL absolue sous forme de str (ce que permet toExternalForm)
-             
+        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm()); // add prend une URL absolue sous forme de str (ce que permet toExternalForm)  
         stage.setTitle("TaskManager");
         stage.setScene(scene);
         stage.show();

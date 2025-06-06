@@ -22,7 +22,6 @@ import java.time.LocalDate;
 
 import org.models.Task;
 import org.openjfx.MenuController;
-import org.mysql.DatabaseConnection;
 
 
 public class DisplayTaskController {

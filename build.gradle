@@ -27,4 +27,20 @@ jlink {
 
 dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.xerial:sqlite-jdbc:3.45.3.0' // driver pour les test sur la bdd sqlite en mémoire
+    testImplementation 'org.xerial:sqlite-jdbc:3.45.3.0'
+    testImplementation 'org.testfx:testfx-junit5:4.0.16-alpha'
 }
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+
+    maxHeapSize = '1G'
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true
+    }
+} 

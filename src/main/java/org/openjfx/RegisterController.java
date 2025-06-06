@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
 import org.mysql.SQLRegisterTask;
-import org.models.Task;
+import org.models.*;
 import org.openjfx.MenuController;
 
 /**
@@ -50,10 +50,16 @@ public class RegisterController {
      * éléments dont le texte est changé dynamiquement, qui ont un comportement au clic, etc.
      */ 
     public void initialize() {
-        displaySoftwareInfos();
-        TableCreation.createTaskTableIfNotExists();
-        RegisterTask registerTask = new RegisterTask(taskText, taskDate);
-        registerButton.setOnAction(registerTask::registerTaskIfFilled);
+        try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
+            displaySoftwareInfos();
+            Database database = new ProductionDatabase();
+            TableCreation tableCreation = new TableCreation(connection, database);
+            tableCreation.createTaskTableIfNotExists();
+            RegisterTask registerTask = new RegisterTask(taskText, taskDate, database);
+            registerButton.setOnAction(event -> registerTask.registerTaskIfFilled(event));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void displaySoftwareInfos() {
@@ -68,27 +74,35 @@ class RegisterTask {
     private DatePicker taskDate;
     private String text;
     private LocalDate date;
+    private Database database;
 
-    public RegisterTask(TextField taskText, DatePicker taskDate){
+    public RegisterTask(TextField taskText, DatePicker taskDate, Database database){
         this.taskText = taskText;
         this.taskDate = taskDate;
+        this.database = database;
     }
 
     public void registerTaskIfFilled(ActionEvent event){
-        String text = taskText.getText();
-        LocalDate date = taskDate.getValue();
-        Task task = new Task(text, date);//this.taskText, this.taskDate);
-        if (task.text.isEmpty()){
-            showErrorMessage();
-            return;
+        try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
+            String text = taskText.getText();
+            LocalDate date = taskDate.getValue();
+            Task task = new Task(text, date);
+            if (task.getText().isEmpty()){
+                showErrorMessage();
+                return;
+            }
+            SQLRegisterTask sqlRegister = new SQLRegisterTask(connection, database);
+            sqlRegister.register(task);
+            taskText.clear();
+            showSuccessfulRegisteringMessage();
+        } catch (SQLException e){
+            e.printStackTrace();
         }
-        SQLRegisterTask.register(task);
-        taskText.clear();
-        showSuccessfulRegisteringMessage();
     }
 
     private void showErrorMessage(){
         Alert alert = new Alert(AlertType.ERROR);
+        alert.getDialogPane().getStyleClass().add("alert");
         alert.setHeaderText("Invalid task");
         alert.setContentText("You should enter a task");
         alert.showAndWait();
