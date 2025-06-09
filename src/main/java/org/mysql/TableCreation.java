@@ -39,7 +39,7 @@ public class TableCreation {
         return tableExists;
     }
 
-    private void chooseDatabase() throws SQLException {
+    public void chooseDatabase() throws SQLException {
         String use_database_sql = "USE " + database.databaseName + ";";
         Statement statement = connection.createStatement();
         statement.execute(use_database_sql);

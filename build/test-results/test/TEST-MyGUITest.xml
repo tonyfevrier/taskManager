@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="MyGUITest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-06-06T19:52:03" hostname="DESKTOP-R4ORVAT" time="3.959">
+<testsuite name="MyGUITest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-06-09T23:35:55" hostname="DESKTOP-R4ORVAT" time="3.37">
   <properties/>
-  <testcase name="test(FxRobot)" classname="MyGUITest" time="3.959"/>
+  <testcase name="test(FxRobot)" classname="MyGUITest" time="3.37"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[juin 06, 2025 9:52:03 PM com.sun.javafx.application.PlatformImpl startup
+  <system-err><![CDATA[juin 10, 2025 1:35:55 AM com.sun.javafx.application.PlatformImpl startup
 AVERTISSEMENT: Unsupported JavaFX configuration: classes were loaded from 'unnamed module @32502377'
 SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 SLF4J: Defaulting to no-operation (NOP) logger implementation

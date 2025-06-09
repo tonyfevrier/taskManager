@@ -5,6 +5,8 @@ package test;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 
 import org.mysql.*;
 import org.models.*;
@@ -15,15 +17,35 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
+
+
+class SQLConnection {
+    private Connection bddConnection;
+    private Database database;
+
+    @Test void testMySQLConnection() throws SQLException {
+        bddConnection = DatabaseConnection.getConnection(new TestCredentials());
+        database = new TestDatabase();
+        assertInstanceOf(Connection.class, bddConnection);
+    }
+}
 
 
 class MySQLTest {
     private Connection bddConnection;
     private Database database;
 
-    @Test void testMySQLConnection() throws SQLException {
+    @BeforeEach
+    void setUp() throws SQLException {
         bddConnection = DatabaseConnection.getConnection(new TestCredentials());
-        assertInstanceOf(Connection.class, bddConnection);
+        database = new TestDatabase();
+    }
+
+    @AfterEach
+    void cleanUp() throws SQLException {
+        String sql = "DROP TABLE " + database.tableName;
+        bddConnection.createStatement().execute(sql);
     }
 
     @Test void testTableCreation() {
@@ -36,18 +58,17 @@ class MySQLTest {
     }
 
     private void createTable() throws SQLException {
-        bddConnection = DatabaseConnection.getConnection(new TestCredentials());
-        database = new TestDatabase();
         TableCreation tableCreation = new TableCreation(bddConnection, database);
+        tableCreation.chooseDatabase();
         tableCreation.createTaskTable();
     }
 
     private void checkIfTableCreated() throws SQLException {
         Statement statement = bddConnection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table'");
+        ResultSet resultSet = statement.executeQuery("SHOW TABLES");
         Boolean found = false;
         while (resultSet.next()){
-            String tableName = resultSet.getString("name");
+            String tableName = resultSet.getString(1);
             if ("tasks".equals(tableName)){
                 found = true;
             }
@@ -59,23 +80,25 @@ class MySQLTest {
         try {
             createTable();
             Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
-            registerA(task);
+            register(task);
             checkIfTaskRegistered(task);
         } catch (SQLException e){
             e.printStackTrace();
         }
     }
 
-    private void registerA(Task task) throws SQLException {
+    private void register(Task... tasks) throws SQLException {
         SQLRegisterTask registerTask = new SQLRegisterTask(bddConnection, database);
-        registerTask.register(task);
+        for (Task task:tasks){
+            registerTask.register(task);
+        }
     }
 
     private void checkIfTaskRegistered(Task task) throws SQLException {
         Statement statement = bddConnection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT id, task, created_at FROM tasks");
-        while (resultSet.next()){
-            assertEquals(0, resultSet.getInt("id"));
+        while (resultSet.next()){ 
+            assertEquals(1, resultSet.getInt("id"));
             assertEquals(task.getText(), resultSet.getString("task"));
             assertEquals(task.getDate().toString(), resultSet.getDate("created_at").toString());
         }
@@ -85,7 +108,7 @@ class MySQLTest {
         try {
             Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
             createTable();
-            registerA(task);
+            register(task);
             List<Task> taskList = extractTask("allTasks");
             checkExtraction(task, taskList);
         } catch (SQLException e){
@@ -99,9 +122,37 @@ class MySQLTest {
     }
 
     private void checkExtraction(Task task, List<Task> taskList){
+        Task resultingTask = taskList.get(0);
         assertEquals(1, taskList.size());
-        assertEquals(0, taskList.get(0).getId());
-        assertEquals(task.getText(), taskList.get(0).getText());
-        assertEquals(task.getDate().toString(), taskList.get(0).getDate().toString());    
+        assertEquals(1, resultingTask.getId());
+        assertEquals(task.getText(), resultingTask.getText());
+        assertEquals(task.getDate().toString(), resultingTask.getDate().toString());    
+    }
+
+    @Test void testDeleteTask() {
+        try{
+            Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
+            Task task2 = new Task("test 2", LocalDate.of(2025, 6, 5));
+            createTable();
+            register(task, task2);
+            deleteTaskNumber(1);
+            checkExtractionAfterDeleteFirstTask(task2);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }      
+    }
+
+    private void deleteTaskNumber(Integer id) throws SQLException {
+        DeleteTask deleteObject = new DeleteTask(id, bddConnection, database);
+        deleteObject.delete();
+    }
+
+    private void checkExtractionAfterDeleteFirstTask(Task task2) throws SQLException {
+        List<Task> taskList = extractTask("allTasks");
+        Task resultingTask = taskList.get(0); 
+        assertEquals(1, taskList.size());
+        assertEquals(2, resultingTask.getId());
+        assertEquals(task2.getText(),  resultingTask.getText());
+        assertEquals(task2.getDate().toString(), resultingTask.getDate().toString());
     }
 }
