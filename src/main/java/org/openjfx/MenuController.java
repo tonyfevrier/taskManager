@@ -92,6 +92,8 @@ abstract class MenuPage {
 
 class RegisterPage extends MenuPage {
     /*Handle the loading of register fxml page */
+    private FXMLLoader loader;
+
     public RegisterPage(Stage stage){
         super(stage);
     }
@@ -101,11 +103,18 @@ class RegisterPage extends MenuPage {
     };
 
     private void load(String page) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(page));
+        loader = new FXMLLoader(getClass().getResource(page));
+        buildPageController();
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm()); // add prend une URL absolue sous forme de str (ce que permet toExternalForm)
         Stage stage = getStage();
         stage.setScene(scene);
+    }
+
+    private void buildPageController() {
+        RegisterController controller = new RegisterController();
+        loader.setController(controller);
     }
 }
 

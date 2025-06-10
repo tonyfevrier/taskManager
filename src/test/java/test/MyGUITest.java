@@ -44,7 +44,9 @@ public class MyGUITest extends ApplicationTest {
         // Il remplit ensuite une tâche datée du jour (avec today pour éviter de devoir modifier le test le lendemain)
         // Il clique sur le menu afin d'aller voir toutes les tâches et voit les deux tâches créées
         // Il clique sur les tâches du jour et voit la tâche qu'il a créée
-        // Il clique dans le menu pour revenir à RegisterTask
+        // Il supprime sa tâche et voit sa tâche disparaître
+        // Il clique sur toutes les tâches et voit qu'il ne reste qu'une tâche
+        // Il clique sur cette tâche et la modifie en lui ajoutant une date.
 
         /*clickOn("#myButton");
         verifyThat("#myLabel", hasText("Bonjour !"));*/

@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import org.mysql.DatabaseConnection;
 import org.mysql.TableCreation;
 import org.mysql.SQLRegisterTask;
+import org.mysql.SQLModifyTask;
+import org.mysql.Register;
 import org.models.*;
 import org.openjfx.MenuController;
 
@@ -44,22 +46,53 @@ public class RegisterController {
     @FXML
     private Label errorRegisterTask; 
     
-
+    private Task task;
+    private Database database;
     /**
      * Tous les éléments qui ont un comportement spécial après injection doivent être intégrés dans cette méthode :
      * éléments dont le texte est changé dynamiquement, qui ont un comportement au clic, etc.
      */ 
+    public void setMemorizedTask(Task task){
+        // called only when the user modify a task to fill the info of it in the TextField and DatePicker
+        this.task = task;
+    }
+
     public void initialize() {
         try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
             displaySoftwareInfos();
-            Database database = new ProductionDatabase();
+            database = new ProductionDatabase();
             TableCreation tableCreation = new TableCreation(connection, database);
             tableCreation.createTaskTableIfNotExists();
-            RegisterTask registerTask = new RegisterTask(taskText, taskDate, database);
+            RegisterTask registerTask = chooseBetweenRegisterOrModify();
             registerButton.setOnAction(event -> registerTask.registerTaskIfFilled(event));
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private RegisterTask chooseBetweenRegisterOrModify(){
+        Integer id;
+        Class<? extends Register> sqlRegisterTaskClass;
+        // If task is not null, we modify it, it has an id, and the fiels must be filled
+        if (task != null) {
+            id = task.getId();
+            sqlRegisterTaskClass = SQLModifyTask.class;
+            fillInputFields();
+        } else {
+            id = null;
+            sqlRegisterTaskClass = SQLRegisterTask.class;
+        }
+        
+        return new RegisterTask(id, taskText, taskDate, database, sqlRegisterTaskClass);
+    }
+
+    private void fillInputFields() {
+        taskText.setText(task.getText());
+        LocalDate date = task.getDate();
+        if (date != null) {
+            taskDate.setValue(date);
+        } 
     }
 
     private void displaySoftwareInfos() {
@@ -69,33 +102,39 @@ public class RegisterController {
     }
 }
 
+
 class RegisterTask {
+    /*Handle the call to SQLRegisterTask and the printing of error or sucess messages*/
+    private Integer id;
     private TextField taskText;
     private DatePicker taskDate;
     private String text;
     private LocalDate date;
     private Database database;
+    private Class<? extends Register> sqlRegisterClass;
 
-    public RegisterTask(TextField taskText, DatePicker taskDate, Database database){
+    public RegisterTask(Integer id, TextField taskText, DatePicker taskDate, Database database, Class<? extends Register> sqlRegisterClass){
+        this.id = id; // null except when we modify an existing task
         this.taskText = taskText;
         this.taskDate = taskDate;
         this.database = database;
+        this.sqlRegisterClass = sqlRegisterClass; //choose between SQLModifyTask and SQLRegisterTask
     }
 
     public void registerTaskIfFilled(ActionEvent event){
         try (Connection connection = DatabaseConnection.getConnection(new MySQLCredentials())){
             String text = taskText.getText();
             LocalDate date = taskDate.getValue();
-            Task task = new Task(text, date);
+            Task task = new Task(text, date, id);
             if (task.getText().isEmpty()){
                 showErrorMessage();
                 return;
             }
-            SQLRegisterTask sqlRegister = new SQLRegisterTask(connection, database);
+            Register sqlRegister = sqlRegisterClass.getConstructor(Connection.class, Database.class).newInstance(connection, database);
             sqlRegister.register(task);
             taskText.clear();
             showSuccessfulRegisteringMessage();
-        } catch (SQLException e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

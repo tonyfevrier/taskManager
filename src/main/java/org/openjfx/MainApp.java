@@ -7,11 +7,16 @@ import javafx.scene.Scene; // Gérer le style (css) et l'interactivité de l'app
 import javafx.stage.Stage; // Créer la fenêtre qui a été stylisée et gérée dans stage
 import javafx.scene.control.*;
 
+import org.openjfx.RegisterController;
+
 public class MainApp extends Application {
 
     @Override 
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("register.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("register.fxml"));
+        RegisterController controller = new RegisterController();
+        loader.setController(controller);
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm()); // add prend une URL absolue sous forme de str (ce que permet toExternalForm)  
         stage.setTitle("TaskManager");
