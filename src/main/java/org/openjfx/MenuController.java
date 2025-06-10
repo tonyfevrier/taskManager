@@ -91,6 +91,7 @@ abstract class MenuPage {
 
 
 class RegisterPage extends MenuPage {
+    /*Handle the loading of register fxml page */
     public RegisterPage(Stage stage){
         super(stage);
     }
@@ -110,6 +111,7 @@ class RegisterPage extends MenuPage {
 
 
 class DisplayTasksPage extends MenuPage {
+    /*Handle the loading of displayTasks.fxml, extracting necessary sql data for DisplayTaskController */
     private String whichTasks;
     private FXMLLoader loader;
 
@@ -131,7 +133,6 @@ class DisplayTasksPage extends MenuPage {
             e.printStackTrace();
             return new ArrayList<>();
         }
-
     }
 
     private void load(String page, List<Task> taskList) throws Exception {
@@ -148,6 +149,7 @@ class DisplayTasksPage extends MenuPage {
         /* Pass the task list to the fxml controller of the page */
         DisplayTaskController controller = new DisplayTaskController();
         controller.setTaskList(taskList);
+        controller.setWhichTasks(whichTasks);
         loader.setController(controller);
     }
 }

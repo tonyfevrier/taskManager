@@ -106,8 +106,8 @@ class MySQLTest {
 
     @Test void testSQLExtractAllTasks(){
         try {
-            Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
             createTable();
+            Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
             register(task);
             List<Task> taskList = extractTask("allTasks");
             checkExtraction(task, taskList);
@@ -131,9 +131,9 @@ class MySQLTest {
 
     @Test void testDeleteTask() {
         try{
+            createTable();
             Task task = new Task("test 1", LocalDate.of(2025, 6, 4));
             Task task2 = new Task("test 2", LocalDate.of(2025, 6, 5));
-            createTable();
             register(task, task2);
             deleteTaskNumber(1);
             checkExtractionAfterDeleteFirstTask(task2);

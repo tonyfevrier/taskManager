@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="test.MySQLTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-06-09T23:35:59" hostname="DESKTOP-R4ORVAT" time="0.224">
+<testsuite name="test.MySQLTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-06-10T02:38:33" hostname="DESKTOP-R4ORVAT" time="0.251">
   <properties/>
-  <testcase name="testSQLRegister()" classname="test.MySQLTest" time="0.072"/>
-  <testcase name="testDeleteTask()" classname="test.MySQLTest" time="0.054"/>
-  <testcase name="testTableCreation()" classname="test.MySQLTest" time="0.048"/>
-  <testcase name="testSQLExtractAllTasks()" classname="test.MySQLTest" time="0.049"/>
+  <testcase name="testSQLRegister()" classname="test.MySQLTest" time="0.08"/>
+  <testcase name="testDeleteTask()" classname="test.MySQLTest" time="0.066"/>
+  <testcase name="testTableCreation()" classname="test.MySQLTest" time="0.05"/>
+  <testcase name="testSQLExtractAllTasks()" classname="test.MySQLTest" time="0.053"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
